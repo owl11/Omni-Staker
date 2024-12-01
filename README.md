@@ -99,5 +99,7 @@ The current state of the contracts is good, but more work is needed, the solo st
 
 Citations:
 [1] https://docs.layerzero.network/v2/developers/evm/oft/oft-patterns-extensions
+
 [2] https://ethereum.org/en/developers/docs/standards/tokens/erc-4626
+
 [3] Ethena Ble testnet network information https://drive.google.com/file/d/1NR35yYpZV6m4eZOHr4WgIy4U9IyIOhjt/view

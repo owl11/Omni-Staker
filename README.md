@@ -1,7 +1,7 @@
 ---
 
 # OMNI Staker
-
+incubated during the Encode club's Ethena hackathon, and winner of [Best Use of LayerZero O-App](https://x.com/encodeclub/status/1871216983100068279)
 ## Overview
 
 Omni Staker implements a decentralized staking and unstaking mechanism, utilizing the staked token standard ERC4626, and Layer Zero OFT standard. We bring a solution to users in L2's to interact with the staked assets as if they were on the host chain (ETH), but it can work for any chain with a staked asset and OFT capabilities.

@@ -7,9 +7,9 @@ Omni Staker is a universal cross-chain staking solution that enables any Layer 2
 ## Deployed Contract
 
 - **Contract Address**: `0xC0c0EbfC83e9E9d1A2ED809B4F841BcFB58ACEFE`
-  - Identical address across all supported chains
+  - Nearly identical address across all supported chains
   - Currently active on Ethereum and Base
-  - Expandable to any LayerZero-supported chain
+  - Expandable to any LayerZero-supported chain with OFT Compose capabilities
 
 ## Cross-Chain Integration Requirements
 
@@ -47,7 +47,7 @@ Omni Staker is a universal cross-chain staking solution that enables any Layer 2
 // Required on new chain
 address LZ_ENDPOINT;
 address OFT_TOKEN;
-uint32 CHAIN_ID;
+address stakedOFT_TOKEN;
 ```
 
 ### 2. Message Structure
@@ -61,7 +61,7 @@ uint32 CHAIN_ID;
 
 ```solidity
 uint256 GAS_FOR_RELAY = 500_000;
-uint256 GAS_FOR_CALL = 80_000;
+uint256 GAS_FOR_CALL = 65_000;
 ```
 
 ## Security Considerations

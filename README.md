@@ -1,105 +1,84 @@
 ---
 
 # OMNI Staker
-incubated during the Encode club's Ethena hackathon, and winner of [Best Use of LayerZero O-App](https://x.com/encodeclub/status/1871216983100068279)
+Incubated during the Encode club's Ethena hackathon, and winner of [Best Use of LayerZero O-App](https://x.com/encodeclub/status/1871216983100068279)
+
 ## Overview
 
-Omni Staker implements a decentralized staking and unstaking mechanism, utilizing the staked token standard ERC4626, and Layer Zero OFT standard. We bring a solution to users in L2's to interact with the staked assets as if they were on the host chain (ETH), but it can work for any chain with a staked asset and OFT capabilities.
+Omni Staker is a cross-chain staking solution enabling USDe token staking from Layer 2 networks to Ethereum Mainnet. The protocol consists of two main components:
 
-Users can stake tokens and withdraw rewards seamlessly through a series of smart contracts. The architecture consists of four contracts, which can be divided into pairs: two for the Layer 1 and Layer 2 staking with batch processing, and two solo counterpart contracts that handle individual user transactions without batching. This design caters to both users who prefer the efficiency of batch processing and those who prefer immdeiate finality.
+1. L2 Contract (User-Facing) - Handles all user interactions
+2. L1 Contract (Internal) - Manages mainnet staking operations
 
-## Workflow Overview
+> ⚠️ Important: Users should only interact with the L2 contract. The L1 contract is system-managed and not meant for direct user interaction.
 
-### Starting on Layer 2
+## Documentation
 
-The workflow begins on Layer 2, where users can stake their tokens in a more cost-effective manner compared to Layer 1. By leveraging Layer Zero, users benefit from significantly lower gas fees by batching the mint and redeem functions of many users. The process is designed to be user-friendly, allowing multiple users to stake their tokens simultaneously in batches.
+For detailed technical information, please refer to:
+- [Omni Staker L2 Guide](./docs/L2_Staker_Documentation.md) 
+- [Omni Staker L1 Guide](./docs/L1_Staker_Documentation.md)
 
-1. **User Staking**: Users deposit their tokens into the L2 Staker contract, which aggregates these deposits into batches.
+## Architecture Overview
 
-2. **Batch Processing**: The contract manages multiple user stakes, optimizing gas costs and simplifying reward distribution.
+The system operates through two distinct layers:
 
-3. **Reward Calculation**: Rewards are calculated based on each user's proportional stake within the batch, ensuring fair distribution.
+### Layer 2 (User Interface)
+- All user interactions happen here
+- Lower gas costs
+- Handles both solo and batch staking
+- Manages cross-chain message composition
+- Implements gas optimization strategies
 
-4. **Withdrawal Mechanism**: Users can easily withdraw their rewards in USDE, reflecting the higher value of their staked sUsde tokens.
+### Layer 1 (System Operations)
+- No direct user interaction
+- Processes messages from L2
+- Manages actual staking operations
+- Handles protocol security and admin functions
 
-### Transitioning to Layer 1
+## Contract Types
 
-Once the batch is queued and sent on Layer 2, The L1 contract handles the message accordingly, be it a stake or a redeem, with unstakes/redeems inserted into the withdrawal queue and direct stakes exchanges for their staked counterpart.
+1. L2 Contract (User-Facing) - Handles all user interactions
+2. L1 Contract (Internal) - Manages mainnet staking operations
+> ⚠️ Important: Users should only interact with the L2 contract. The L1 contract is system-managed and not meant for direct user interaction.
 
-## Contracts
+## Key Features
 
-### 1. L2 Staker Contract
+- Cross-chain messaging via LayerZero
+- Dynamic batch sizing based on gas prices
+- Protocol fee management (0.3%)
+- Gas estimation helpers
+- Emergency controls and admin functions
 
-The L2 Staker contract allows users to stake tokens on a Layer 2 network. It manages multiple users' stakes in batches, optimizing gas costs and simplifying the withdrawal process. Key features include:
+## Try it out
 
-- **Batch Processing**: Users can deposit tokens in batches, allowing for efficient management of multiple stakes.
-- **Reward Calculation**: The contract calculates the balance in staked tokens for each user based on their proportional stake within the batch.
-- **Withdrawal Mechanism**: Users can withdraw their staked tokens in a straightforward manner, ensuring they receive the correct amount based on their deposited/staked amount.
+> ⚠️ WARNING: CONTRACTS ARE IN BETA, NOT AUDITED, USE WITH CAUTION
 
-### 2. L1 Staker Contract
+## Deployed Contracts
 
-The L1 Staker contract handles requests sent by the L2 contract and processes them efficiently using LayerZero messaging protocol. It provides enhanced security and finality while allowing users to manage their stakes effectively. Key features include:
+### Layer 2 (Base) - User Interface Contract
+- **Contract Address**: `0xC0c0EbfC83e9E9d1A2ED809B4F841BcFB58ACEFE`
+- [View on Basescan](https://basescan.org/address/0xC0c0EbfC83e9E9d1A2ED809B4F841BcFB58ACEFE)
 
-- **Handles L2 Requests**: The L1 contract consumes messages sent from the L2 contract via Layer Zero, by using the OApp compose interface, it fetches details about user withdrawals, deposits or state updates.
-- **Accurate Balance Management**: When a request is received from L2, the L1 contract queries the fetched balance and calculates how much `SUSD` or staked token to return based on current that amount without friction.
+### Layer 1 (Ethereum) - System Contract
+- **Contract Address**: `0xC0c0EbfC83e9E9d1A2ED809B4F841BcFB58ACEFE`
+- [View on Etherscan](https://etherscan.io/address/0xC0c0EbfC83e9E9d1A2ED809B4F841BcFB58ACEFE)
+- ⚠️ Do not interact directly with this contract
 
-### 3. Solo L2 Staker Contract
+## Development Status
 
-The Solo L2 Staker contract enables users to stake tokens individually without batching. Each user pays for their own transaction fees, providing a more customized staking experience.
+- ✅ Solo staking implementation
+- ✅ Batch staking implementation
+- 🔄 Unstaking functionality (in progress)
+- 🔄 Additional gas optimizations
+- 🔄 Enhanced batch processing
+- 🔄 Security review
 
-- #### Key features include:
+## References
 
-- **Individual Transactions**: Users can stake and withdraw tokens independently, allowing for greater control over their funds.
-- **Direct Fee Payment**: Users are responsible for their own gas fees, which can be beneficial for those who prefer not to share costs with others.
-- **Direct user transfers**: unlike the batched version, users receive their tokens in their wallets after deposits and withdrawals (after the cooldown period), meaning users don't need to interact with the contract to withdraw their share.
+1. [LayerZero OApp Patterns](https://docs.layerzero.network/v2/developers/evm/oft/oft-patterns-extensions)
+2. [ERC-4626 Standard](https://ethereum.org/en/developers/docs/standards/tokens/erc-4626)
+3. [Ethena Testnet Info](https://drive.google.com/file/d/1NR35yYpZV6m4eZOHr4WgIy4U9IyIOhjt/view)
 
-### 4. Solo L1 Staker Contract
+## Contact
 
-Much like the earlier L1 staker, but tailored for individual uses, users send their tokens through the L2 contract or directly, using Layer Zero's OFT, and the contract handles the operation accordingly.
-
-- **Independent Staking**: Users can manage their stakes without relying on batch processes.
-- **Lower Transaction Costs**: While interacting with Layer 1 directly, users benefit from optimized gas usage during individual transactions.
-
-## Functionality
-
-### Batching Mechanism
-
-L2Staker utilizes a batching mechanism that allows multiple users to stake their tokens together. This approach optimizes gas usage and simplifies the process of staking tokens, especially for users outpriced from the ETH mainnet, allowing users to interact with L1 protocols with less fees than anticipated.
-
-### Balance tracking
-
-The contracts implement a robust calculation system that ensures users receive accurate amounts based on their stakes. The formula used takes into account both the user's balance and the total amounts of staked tokens in each batch.
-
-### User Withdrawals
-
-Users can withdraw their rewards easily through dedicated functions in each contract. The withdrawal process is designed to ensure that users receive their correct share of rewards based on their proportional stake.
-
-## Test it?
-
-Though most of the work remains a WIP (BUGS MAY EXIST, PROCEED WITH CAUTION, THIS CODE HAS NOT BEEN AUDITED).
-
-You can try the contracts in Ethena Ble testnet:
-https://testnet.explorer.ethena.fi/address/0x01f46253bC7011990AB1D8e8D996ED9700ee2Ae0?tab=read_contract
-
-and the corrosponding L1 contract, which traditionally requires no user interaction after the L2 transaction has been deposited:
-https://sepolia.etherscan.io/search?f=0&q=0xd71FEf1Ba351c413Cf7E8D91cBC8EbfcBa10F2E1 (WIP)
-
-The solo staker contracts, meanwhile, provide immediate stakes, and unstake requests, but require further optimization, with L2 Solo staker delpoyed at :
-
-https://testnet.explorer.ethena.fi/address/0x16BCB084B2dDEc17bFE4f1EF6d5cB769967D3Cd3?tab=contract
-
-And again, the L1 Solo Staker, which works side by side with the L2Staker, but can also work independently, where sending tokens directly to it would incur the required operation, be it a stake, an unstake request, or an unstake one cooldown has passed :
-https://sepolia.etherscan.io/search?f=0&q=0x2542b59b5b7bd401671a7a97954a85bfa1f6823d (WIP)
-
-The script folder attached provides a solid starting point for interacting with the protocol, from staking and unstaking all the way to deployment at specific nonce, and permissioned functionalities expected to not be used unless an upgrade or as an emergency circuit breaker.
-
-## Further info
-
-The current state of the contracts is good, but more work is needed, the solo staker handles all types of operations (though further optimization would be ideal), whereas the batcher version only handles stakes since the complexity of handling Batched unstakes alongside their respective unstake requests once the cooldown period passed adds additional overhead fortunately, any additional compelxities may remain on the L2 side of things, keeping transactions affordable for all users.
-
-Citations:
-[1] https://docs.layerzero.network/v2/developers/evm/oft/oft-patterns-extensions
-
-[2] https://ethereum.org/en/developers/docs/standards/tokens/erc-4626
-
-[3] Ethena Ble testnet network information https://drive.google.com/file/d/1NR35yYpZV6m4eZOHr4WgIy4U9IyIOhjt/view
+Technical support: [Twitter @0xOwi](https://x.com/0xOwi)
